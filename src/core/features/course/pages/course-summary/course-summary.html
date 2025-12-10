@@ -94,7 +94,7 @@
 
                     @if (course.contacts && course.contacts.length) {
                         <ion-list>
-                            <ion-item [button]="course.contacts.length >= 5" class="ion-text-wrap" (click)="toggleContacts()"
+                            <!-- <ion-item [button]="course.contacts.length >= 5" class="ion-text-wrap" (click)="toggleContacts()"
                                 [attr.aria-label]="(contactsExpanded ? 'core.collapse' : 'core.expand') | translate" [detail]="false">
                                 @if (course.contacts.length >= 5) {
                                     <ion-icon name="fas-chevron-right" flip-rtl slot="start" aria-hidden="true"
@@ -105,7 +105,7 @@
                                         {{ 'core.teachers' | translate }}
                                     </h2>
                                 </ion-label>
-                            </ion-item>
+                            </ion-item> -->
                             @if (contactsExpanded || course.contacts.length < 5) {
                                 @for (contact of course.contacts; track contact.id) {
                                     <ion-item button class="ion-text-wrap" core-user-link

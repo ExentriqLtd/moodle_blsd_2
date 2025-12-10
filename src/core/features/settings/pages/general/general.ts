@@ -191,7 +191,41 @@ export default class CoreSettingsGeneralPage {
         CoreNavigator.navigate('/reload', {
             reset: true,
         });
+        /* Change Language*/
+        const currentSite = CoreSites.getCurrentSite();
+        if(currentSite)
+        {
+            CoreSettingsHelper.deleteSiteStorageNoConfirm(await currentSite.getSiteName() || '', currentSite.getId());
+        }
+
+        const token = currentSite?.getToken();
+        const payload = {
+            token,
+            lang: this.selectedLanguage,
+            userId: currentSite?.getUserId(),
+        };
+
+        const url = 'https://art001exe.exentriq.com/93489/updateBLSDLanguage';
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        })
+            .then(response => response.json())
+            .then(data => {
+                currentSite?.invalidateWsCache();
+                CoreNavigator.navigate('/reload', {
+                    reset: true,
+                });
+                console.log(data);
+            });
+
     }
+
+
 
     /**
      * Called when a new zoom level is selected.

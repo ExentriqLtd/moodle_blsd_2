@@ -41,7 +41,7 @@
                 </ion-item>
                 <ion-accordion-group (ionChange)="accordionGroupChange($event.detail)" #accordionGroup>
                     <ion-accordion *ngFor="let option of groupConversations" [value]="option.optionName" toggleIconSlot="start">
-                        <ion-item slot="header" class="ion-text-wrap divider">
+                        <!-- <ion-item slot="header" class="ion-text-wrap divider">
                             <ion-label>
                                 <h2>{{ option.titleString | translate }} ({{ option.count }})</h2>
                             </ion-label>
@@ -51,7 +51,7 @@
                                     {{ option.unread }}
                                 </ion-badge>
                             }
-                        </ion-item>
+                        </ion-item> -->
                         <div slot="content">
                             @if (!option.loading) {
 

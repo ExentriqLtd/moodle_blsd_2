@@ -32,6 +32,8 @@ import { CoreErrorHelper } from '@services/error-helper';
 import { CoreNavigator } from '@services/navigator';
 import { CoreHTMLClasses } from '@singletons/html-classes';
 import { CoreAlerts } from '@services/overlays/alerts';
+import { CoreCourse } from '@features/course/services/course';
+import { CoreDomUtils } from '@services/utils/dom';
 
 /**
  * Object with space usage and cache entries that can be erased.
@@ -168,6 +170,59 @@ export class CoreSettingsHelperProvider {
         return siteInfo;
     }
 
+    /**
+     * Deletes files of a site and the tables that can be cleared.
+     *
+     * @param siteName Site Name.
+     * @param siteId Site ID.
+     * @returns Resolved with detailed new info when done.
+     */
+    async deleteSiteStorageNoConfirm(siteName: string, siteId: string): Promise<CoreSiteSpaceUsage> {
+        const siteInfo: CoreSiteSpaceUsage = {
+            cacheEntries: 0,
+            spaceUsage: 0,
+        };
+
+        siteName = await CoreFilter.formatText(siteName, { clean: true, singleLine: true, filter: false }, [], siteId);
+
+        const site = await CoreSites.getSite(siteId);
+
+        // Clear cache tables.
+        const cleanSchemas = CoreSites.getSiteTableSchemasToClear(site);
+        const promises: Promise<number | void>[] = cleanSchemas.map((name) => site.getDb().deleteRecords(name));
+        const filepoolService = CoreFilepool.instance;
+
+        promises.push(site.deleteFolder().then(() => {
+            filepoolService.clearAllPackagesStatus(siteId);
+            filepoolService.clearFilepool(siteId);
+            CoreCourse.clearAllCoursesStatus(siteId);
+
+            siteInfo.spaceUsage = 0;
+
+            return;
+        }).catch(async (error) => {
+            if (error && error.code === FileError.NOT_FOUND_ERR) {
+                // Not found, set size 0.
+                filepoolService.clearAllPackagesStatus(siteId);
+                siteInfo.spaceUsage = 0;
+            } else {
+                // Error, recalculate the site usage.
+                CoreDomUtils.showErrorModal('addon.storagemanager.errordeletedownloadeddata', true);
+
+                siteInfo.spaceUsage = await site.getSpaceUsage();
+            }
+        }).then(async () => {
+            CoreEvents.trigger(CoreEvents.SITE_STORAGE_DELETED, {}, siteId);
+
+            siteInfo.cacheEntries = await this.calcSiteClearRows(site);
+
+            return;
+        }));
+
+        await Promise.all(promises);
+
+        return siteInfo;
+    }
     /**
      * Calculates each site's usage, and the total usage.
      *

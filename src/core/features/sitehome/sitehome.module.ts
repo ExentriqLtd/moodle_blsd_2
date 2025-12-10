@@ -21,6 +21,7 @@ import { CoreSiteHomeHomeHandler } from './services/handlers/sitehome-home';
 import { CoreMainMenuHomeDelegate } from '@features/mainmenu/services/home-delegate';
 import { CoreMainMenuHomeRoutingModule } from '@features/mainmenu/mainmenu-home-routing.module';
 import { CORE_SITEHOME_PAGE_NAME } from './constants';
+import { CoreLoginSiteBadgesComponent } from '@features/sitehome/pages/index/site-pages/site-badges';
 
 /**
  * Get site home services.
@@ -32,6 +33,7 @@ export async function getSiteHomeServices(): Promise<Type<unknown>[]> {
 
     return [
         CoreSiteHomeProvider,
+        CoreLoginSiteBadgesComponent,
     ];
 }
 
