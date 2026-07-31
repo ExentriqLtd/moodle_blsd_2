@@ -65,6 +65,7 @@
         <preference name="AndroidWindowSplashScreenAnimatedIcon" value="resources/android/android-splash.xml" />
         <preference name="AndroidWindowSplashScreenBackground" value="#FFFFFF" />
         <preference name="AndroidWindowSplashScreenIconBackgroundColor" value="#FFFFFF" />
+        <resource-file src="google-services.json" target="app/google-services.json" />
         <resource-file src="resources/android/icon/drawable-land-hdpi-screen.png" target="app/src/main/res/drawable-land-hdpi/screen.png" />
         <resource-file src="resources/android/icon/drawable-land-ldpi-screen.png" target="app/src/main/res/drawable-land-ldpi/screen.png" />
         <resource-file src="resources/android/icon/drawable-land-mdpi-screen.png" target="app/src/main/res/drawable-land-mdpi/screen.png" />
